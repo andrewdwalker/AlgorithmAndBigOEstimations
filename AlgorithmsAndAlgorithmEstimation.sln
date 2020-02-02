@@ -3,7 +3,37 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 15
 VisualStudioVersion = 15.0.28010.2026
 MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BigOEstimatorLibrary", "BigOEstimator\BigOEstimatorLibrary.csproj", "{0C45E71C-0B00-494D-B398-A58929141FAE}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BigOUnitTests", "BigOUnitTests\BigOUnitTests.csproj", "{82DE20C5-CB0D-4210-A6EA-EEC725516B6E}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FibonnacciLibrary", "FibonnacciLibrary\FibonnacciLibrary.csproj", "{2B40C50E-C9D3-4622-A230-F384D7BB49DA}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BigOWpfApp", "BigOWpfApp\BigOWpfApp.csproj", "{13378693-6D2E-406B-B6FA-F082CAA7A001}"
+EndProject
 Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{0C45E71C-0B00-494D-B398-A58929141FAE}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{0C45E71C-0B00-494D-B398-A58929141FAE}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{0C45E71C-0B00-494D-B398-A58929141FAE}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{0C45E71C-0B00-494D-B398-A58929141FAE}.Release|Any CPU.Build.0 = Release|Any CPU
+		{82DE20C5-CB0D-4210-A6EA-EEC725516B6E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{82DE20C5-CB0D-4210-A6EA-EEC725516B6E}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{82DE20C5-CB0D-4210-A6EA-EEC725516B6E}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{82DE20C5-CB0D-4210-A6EA-EEC725516B6E}.Release|Any CPU.Build.0 = Release|Any CPU
+		{2B40C50E-C9D3-4622-A230-F384D7BB49DA}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{2B40C50E-C9D3-4622-A230-F384D7BB49DA}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{2B40C50E-C9D3-4622-A230-F384D7BB49DA}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{2B40C50E-C9D3-4622-A230-F384D7BB49DA}.Release|Any CPU.Build.0 = Release|Any CPU
+		{13378693-6D2E-406B-B6FA-F082CAA7A001}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{13378693-6D2E-406B-B6FA-F082CAA7A001}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{13378693-6D2E-406B-B6FA-F082CAA7A001}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{13378693-6D2E-406B-B6FA-F082CAA7A001}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
 	EndGlobalSection
