@@ -2,6 +2,7 @@
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Text;
 using System.Threading;
@@ -21,7 +22,7 @@ namespace BigOUnitTests
         {
             _randomDouble = _randomNumber.NextDouble();
         }
-        [TestMethod]
+        //[TestMethod]
         public void TestLinearAlgorithm1()
         {
             Evaluator evaluator = new Evaluator();
@@ -34,19 +35,70 @@ namespace BigOUnitTests
         }
 
         [TestMethod]
+        public void SanityTest()
+        {
+            Stopwatch stopwatch = new Stopwatch();
+            //stopwatch.Start();
+            //LinearAlgorithm1(500);
+            //stopwatch.Stop();
+            //Console.WriteLine($"LinearAlgorithm1 took {stopwatch.ElapsedMilliseconds}");
+
+            stopwatch.Restart();
+            LinearAlgorithm2(100000000);
+            stopwatch.Stop();
+            Console.WriteLine($"LinearAlgorithm2 took {stopwatch.ElapsedMilliseconds}");
+
+            stopwatch.Restart();
+            //LogNAlgorithm(9000000000000000000);
+            LogNAlgorithm(ulong.MaxValue);
+            stopwatch.Stop();
+            Console.WriteLine($"LogNAlgorithm took {stopwatch.ElapsedMilliseconds}");
+
+            stopwatch.Restart();
+            QuadraticAlgorithm(5000);
+            stopwatch.Stop();
+            Console.WriteLine($"QuadraticAlgorithm took {stopwatch.ElapsedMilliseconds}");
+
+            stopwatch.Restart();
+            CubicAlgorithm1(1000);
+            stopwatch.Stop();
+            Console.WriteLine($"CubicAlgorithm1 took {stopwatch.ElapsedMilliseconds}");
+
+            stopwatch.Restart();
+            CubicAlgorithm2(1000);
+            stopwatch.Stop();
+            Console.WriteLine($"CubicAlgorithm2 took {stopwatch.ElapsedMilliseconds}");
+        }
+        [TestMethod]
         public void TestLinearAlgorithm2()
         {
             Evaluator evaluator = new Evaluator();
-            var result = evaluator.Evaluate(LinearAlgorithm2, new List<double>()
-                //{ 1000,1021, 1065, 1300, 1423, 1599,
-                //1683, 1722, 1822, 2000, 2050, 2090, 2500, 3000, 3100, 3109, 3500,
-                //4000, 4022, 4089, 4122, 4199, 4202, 4222, 5000 });
-            { 
-                3000, 3100, 3109, 3112, 3117, 3200, 3211, 3216, 3219, 3232, 3500, 3666, 3777,
-                4000, 4022, 4089, 4122, 4199, 4202, 4222, 5000, 6000,
-                7000, 7500, 8000, 9255, 10050, 10090, 11000, 11200, 11500,
-                12001, 13020, 14552, 15999, 19222
-            });
+            List<double> lst = new List<double>();
+
+            // THIS WORKS
+            //for (int i = 1000000; i < 10000000; i = i + 1233)
+            //{
+            //    lst.Add((double)i);
+            //}
+
+            // THIS WORKS
+            for (Int64 i = 100000000; i < 1000000000; i = i + 10000034)
+            {
+                lst.Add((double)i);
+            }
+
+            
+            var result = evaluator.Evaluate(LinearAlgorithm2, lst);
+            //var result = evaluator.Evaluate(LinearAlgorithm2, new List<double>()
+            //    //{ 1000,1021, 1065, 1300, 1423, 1599,
+            //    //1683, 1722, 1822, 2000, 2050, 2090, 2500, 3000, 3100, 3109, 3500,
+            //    //4000, 4022, 4089, 4122, 4199, 4202, 4222, 5000 });
+            //{ 
+            //    3000, 3100, 3109, 3112, 3117, 3200, 3211, 3216, 3219, 3232, 3500, 3666, 3777,
+            //    4000, 4022, 4089, 4122, 4199, 4202, 4222, 5000, 6000,
+            //    7000, 7500, 8000, 9255, 10050, 10090, 11000, 11200, 11500,
+            //    12001, 13020, 14552, 15999, 19222
+            //});
             var minKey = result.Aggregate((l, r) => l.Value < r.Value ? l : r).Key;
             Assert.IsTrue(minKey.ToString() == FunctionEnum.N.ToString());
         }
@@ -54,23 +106,71 @@ namespace BigOUnitTests
         [TestMethod]
         public void TestQuadraticAlgorithm()
         {
+            List<double> lst = new List<double>();
             Evaluator evaluator = new Evaluator();
-            var result = evaluator.Evaluate(QuadraticAlgorithm, new List<double>()
-            { 1000,1021, 1065, 1300, 1423, 1599,
-                1683, 1722, 1822, 2000, 2050, 2090, 2500, 3000, 3100, 3109, 3500,
-                4000, 4022, 4089, 4122, 4199, 4202, 4222, 5000 });
+            //var result = evaluator.Evaluate(QuadraticAlgorithm, new List<double>()
+            //{ 1000,1021, 1065, 1300, 1423, 1599,
+            //    1683, 1722, 1822, 2000, 2050, 2090, 2500, 3000, 3100, 3109, 3500,
+            //    4000, 4022, 4089, 4122, 4199, 4202, 4222, 5000 });
+            for (Int64 i = 5000; i < 10000; i = i + 100)
+            {
+                lst.Add((double)i);
+            }
+
+            var result = evaluator.Evaluate(QuadraticAlgorithm, lst, false);
             var minKey = result.Aggregate((l, r) => l.Value < r.Value ? l : r).Key;
             Assert.IsTrue(minKey.ToString() == FunctionEnum.NSquared.ToString());
+        }
+
+        [TestMethod]
+        public void TestCubicAlgorithm1()
+        {
+            List<double> lst = new List<double>();
+            Evaluator evaluator = new Evaluator();
+            
+            for (Int64 i = 100; i < 600; i = i + 35)
+            {
+                lst.Add((double)i);
+            }
+
+            var result = evaluator.Evaluate(CubicAlgorithm1, lst, false);
+            var minKey = result.Aggregate((l, r) => l.Value < r.Value ? l : r).Key;
+            Assert.IsTrue(minKey.ToString() == FunctionEnum.NCubed.ToString());
+        }
+
+        [TestMethod]
+        public void TestCubicAlgorithm2()
+        {
+            List<double> lst = new List<double>();
+            Evaluator evaluator = new Evaluator();
+
+            //for (Int64 i = 1000; i < 9000; i = i + 400)
+            for (Int64 i = 100; i < 600; i = i + 35)
+            {
+                lst.Add((double)i);
+            }
+
+            var result = evaluator.Evaluate(CubicAlgorithm2, lst, false);
+            var minKey = result.Aggregate((l, r) => l.Value < r.Value ? l : r).Key;
+            Assert.IsTrue(minKey.ToString() == FunctionEnum.NCubed.ToString());
         }
 
         [TestMethod]      
         public void TestLogNAlgorithm()
         {
+            List<double> lst = new List<double>();
             Evaluator evaluator = new Evaluator();
-            var result = evaluator.Evaluate(LogNAlgorithm, new List<double>()
-            { 1000,1021, 1065, 1300, 1423, 1599,
-                1683, 1722, 1822, 2000, 2050, 2090, 2500, 3000, 3100, 3109, 3500,
-                4000, 4022, 4089, 4122, 4199, 4202, 4222, 5000 });
+            //var result = evaluator.Evaluate(LogNAlgorithm, new List<double>()
+            //{ 1000,1021, 1065, 1300, 1423, 1599,
+            //    1683, 1722, 1822, 2000, 2050, 2090, 2500, 3000, 3100, 3109, 3500,
+            //    4000, 4022, 4089, 4122, 4199, 4202, 4222, 5000 });
+            for (ulong i = 1000000000000; i < 10000000000000; i = i + 50000000000)
+            {
+                lst.Add((double)i);
+            }
+
+            var result = evaluator.Evaluate(LogNAlgorithm, lst);
+
             var minKey = result.Aggregate((l, r) => l.Value < r.Value ? l : r).Key;
             Assert.IsTrue(minKey.ToString() == FunctionEnum.LogN.ToString());
         }
@@ -82,45 +182,29 @@ namespace BigOUnitTests
         /// </summary>
         /// <param name="n"></param>
         /// <returns></returns>
-        uint LinearAlgorithm1(uint n)
+        ulong LinearAlgorithm1(ulong n)
         {
-            for (uint i = 0; i < n; i++)
+            for (ulong i = 0; i < n; i++)
             {
                 Thread.Sleep(1);
                 //uint y = n - i; // dummy calculation
             }
-            return (uint) _randomNumber.Next(1000);
+            return (ulong) _randomNumber.Next(1000);
         }
 
-        uint LinearAlgorithm2(uint n)
+        ulong LinearAlgorithm2(ulong n)
         {
-            uint z = 0;
+            ulong z = 0;
            // uint returnValue = 7;
-            for (uint i = 0; i < n; i++)
+            for (ulong i = 0; i < n; i++)
             {
                 //Thread.Sleep(2);
                 //double y = _randomNumber.NextDouble()*100.0; // dummy calculation
                 z = n + i;
-                //if (y < 0.0005)
-                //{
-                //    returnValue = 1;
-                //    //Console.WriteLine("y " + y + i);
-                //}
-                //else if (y < .05)
-                //{
-                //    returnValue = 2;
-                //}
-                //else if (y < .5)
-                //{
-                //    returnValue = 3;
-                //}
-                //else
-                //{
-                //    returnValue = 7;
-                //}
+               
 
             }
-            return (uint)Math.Log(z);
+            return (ulong)Math.Log(z);
         }
 
         /// <summary>
@@ -128,16 +212,43 @@ namespace BigOUnitTests
         /// </summary>
         /// <param name="n"></param>
         /// <returns></returns>
-        uint QuadraticAlgorithm(uint n)
+        ulong QuadraticAlgorithm(ulong n)
         {
-            for (uint i = 0; i < n; i++)
+            ulong z = 0;
+            for (ulong i = 0; i < n; i++)
             {
-                for (uint j = 0; j < n; j++)
+                for (ulong j = 0; j < n; j++)
                 {
-                    uint z = i + j;
+                    z = i + j;
                 }
             }
-            return n * n;
+            return (ulong)Math.Log(z);//return n * n;
+        }
+
+        ulong CubicAlgorithm1(ulong n)
+        {
+            ulong z = 0;
+            for (ulong i = 0; i < n*n*n; i++)
+            {
+                z = z + i;
+            }
+            return (ulong)Math.Log(z);//return n * n;
+        }
+
+        ulong CubicAlgorithm2(ulong n)
+        {
+            ulong z = 0;
+            for (ulong i = 0; i < n; i++)
+            {
+                for (ulong j = 0; j < n; j++)
+                {
+                    for (ulong k = 0; k < n; k++)
+                    {
+                        z = z + k;
+                    }
+                }
+            }
+            return (ulong)Math.Log(z);
         }
 
         /// <summary>
@@ -146,14 +257,17 @@ namespace BigOUnitTests
         /// </summary>
         /// <param name="n"></param>
         /// <returns></returns>
-        uint LogNAlgorithm(uint n)
+        ulong LogNAlgorithm(ulong n)
         {
-            uint z = 0;
-            for (uint i = 0; i < Math.Log(n); i++)
+            double test1 = Math.Log(n);
+            double test2 = Math.Log10(n);
+            double z = 0;
+            for (ulong i = 0; i < Math.Log(n); i++)
             {
-                z = n + i;
+                Thread.Sleep(20);
+                z = Math.Sin(z)*Math.Cos(z)*Math.Sqrt(Math.Sin(z)) + Math.Sin(i) + Math.Cos(i)*Math.Sin(i*i*i) + Math.Sin(n);
             }
-            return (uint)Math.Log(z);
+            return (ulong)Math.Log(z);
         }
         #endregion
     }

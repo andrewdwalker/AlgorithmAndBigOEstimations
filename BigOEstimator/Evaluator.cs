@@ -42,7 +42,8 @@ namespace BigOEstimator
             
         }
 
-        public  Dictionary<FunctionEnum, double> Evaluate(Func<uint,uint> algorithm, IList<double> suggestedList)
+        public Dictionary<FunctionEnum, double> Evaluate(Func<ulong, ulong> algorithm, IList<double> suggestedList,
+            bool cleanData = true)
         {
             try
             {
@@ -55,64 +56,24 @@ namespace BigOEstimator
                 {
                     Stopwatch stopwatch = new Stopwatch();
                     stopwatch.Start();
-                    var result =  algorithm((uint)suggestedList[i]);
+                    var result =  algorithm((ulong)suggestedList[i]);
                     stopwatch.Stop();
                     answer[i] = stopwatch.ElapsedTicks;
 
                     Console.WriteLine($"Answer for index {suggestedList[i]} is {answer[i]}");
                 }
 
+                Tuple<IList<double>, Vector<double>> cleanedData =
+                    new Tuple<IList<double>, Vector<double>>(suggestedList, answer);
+
+                if (cleanData)
                 // try "cleaning" data
-                Tuple<IList<double>, Vector<double>> cleanedData = CleanData(suggestedList, answer);
-                // linear case - N
-                results[FunctionEnum.N] = CalculateResidual(Vector<double>.Build.DenseOfEnumerable(cleanedData.Item1), cleanedData.Item2, d => d);
-                // quadratic case - NSquared
-                results[FunctionEnum.NSquared] = CalculateResidual(Vector<double>.Build.DenseOfEnumerable(cleanedData.Item1), cleanedData.Item2, d => (d * d));
-                // cubic case - NCubed
-                results[FunctionEnum.NCubed] = CalculateResidual(Vector<double>.Build.DenseOfEnumerable(cleanedData.Item1), cleanedData.Item2, d => (d * d * d));
-                // NLogN case - NLogN
-                results[FunctionEnum.NLogN] = CalculateResidual(Vector<double>.Build.DenseOfEnumerable(cleanedData.Item1), cleanedData.Item2, d => (d * Math.Log(d)));
-                // LogN case - LogN
-                results[FunctionEnum.LogN] = CalculateResidual(Vector<double>.Build.DenseOfEnumerable(cleanedData.Item1), cleanedData.Item2, d => (Math.Log(d)));
-
-                // following few lines are useful for unit tests. You get this by hitting 'Output' on test!
-                var minKey = results.Aggregate((l, r) => l.Value < r.Value ? l : r).Key;
-                Console.WriteLine("Minimum Value: Key: " + minKey.ToString() + ", Value: " + results[minKey]);
-                foreach (var item in results)
+                cleanedData = CleanData(suggestedList, answer);
+                for (int i = 0; i < cleanedData.Item1.Count; i++)
                 {
-                    Console.WriteLine("Test: " + item.Key + ", result: " + item.Value);
+                    
+                    Console.WriteLine($"Cleaned Answer for index {cleanedData.Item1[i]} is {cleanedData.Item2[i]}");
                 }
-                return results;
-            }
-            finally
-            {
-                // Restore the thread default priority.
-                Thread.CurrentThread.Priority = ThreadPriority.Normal;
-            }
-        }
-
-        public async Task<Dictionary<FunctionEnum, double>> EvaluateAsync(Func<uint, Task<uint>> algorithm, IList<double> suggestedList)
-        {
-            try
-            {
-                // See for example: https://stackoverflow.com/questions/3836584/lowering-priority-of-task-factory-startnew-thread
-                // for a dicussion of changing thread priority
-                Thread.CurrentThread.Priority = ThreadPriority.Highest;
-                Dictionary<FunctionEnum, double> results = new Dictionary<FunctionEnum, double>();
-                Vector<double> answer = Vector<double>.Build.Dense(suggestedList.Count(), 0.0);
-                for (int i = 0; i < suggestedList.Count(); i++)
-                {
-                    Stopwatch stopwatch = new Stopwatch();
-                    stopwatch.Start();
-                    var result = await algorithm((uint)suggestedList[i]);
-                    stopwatch.Stop();
-                    answer[i] = stopwatch.ElapsedTicks;
-
-                    Console.WriteLine($"Answer for index {suggestedList[i]} is {answer[i]}");
-                }
-
-                // try "cleaning" data
-                Tuple<IList<double>, Vector<double>> cleanedData = CleanData(suggestedList, answer);
                 // linear case - N
                 results[FunctionEnum.N] = CalculateResidual(Vector<double>.Build.DenseOfEnumerable(cleanedData.Item1), cleanedData.Item2, d => d);
                 // quadratic case - NSquared
@@ -185,24 +146,64 @@ namespace BigOEstimator
         {
             // remove the first few entries which seems to be often very out of whack!
             //lst.RemoveAt(0);
-            var newList = lst.Skip(2).ToList();
-            var newAnswers = answers.SubVector(2, answers.Count - 2);
+            var newList = lst.Skip(10).Take(lst.Count - 20).ToList();
+            var newAnswers = answers.SubVector(10, answers.Count - 20);
 
-            // try to remove any abnormally large items.
-            for (int i = 0; i < 10; i ++)
+            List<int> extremeNumbers = new List<int>();
+            for (int i = 0; i < newAnswers.Count-5; i++)
             {
-                int maxIndex = newAnswers.MaximumIndex();
-                if (maxIndex < newAnswers.Count - 3)
+                if (newAnswers[i] > newAnswers.SubVector(i+1,5).Average())
                 {
-                    newAnswers[maxIndex] = (newAnswers[maxIndex - 1] + newAnswers[maxIndex + 1]) / 2.0;
-                }
-                else
-                {
-                    break;
+                    extremeNumbers.Insert(0, i);
                 }
             }
-            
+            Console.WriteLine($"Number of extremeNumbers: {extremeNumbers.Count}");
+            for (int i = 0; i < extremeNumbers.Count; i++)
+            {
+                newList.RemoveAt(extremeNumbers[i]);
+                newAnswers = DeleteAt<double>(newAnswers, extremeNumbers[i]);
+            }
+            ////try to remove any abnormally large items.
+            //for (int i = 0; i < 10; i++)
+            //{
+
+            //    int maxIndex = newAnswers.SubVector(0, newAnswers.Count - 10).MaximumIndex();
+            //    if (newAnswers[maxIndex] > newAnswers.SubVector(maxIndex + 1, 5).Average())
+            //    {
+            //        newList.RemoveAt(maxIndex);
+            //        newAnswers = DeleteAt<double>(newAnswers, maxIndex);
+            //    }
+
+            //    //if (maxIndex < newAnswers.Count - 3)
+            //    //{
+            //    //    newAnswers[maxIndex] = (newAnswers[maxIndex - 1] + newAnswers[maxIndex + 1]) / 2.0;
+            //    //}
+            //    //else
+            //    //{
+            //    //    break;
+            //    //}
+            //}
+
             return new Tuple<IList<double>, Vector<double>>(newList, newAnswers);
+        }
+
+        // See: https://stackoverflow.com/questions/19157002/how-to-add-a-new-element-into-a-densevector
+        Vector<T> InsertAt<T>(Vector<T> v, int i, T value) where T : struct, IEquatable<T>, IFormattable
+        {
+            var res = Vector<T>.Build.Dense(v.Count + 1);
+            if (i > 0) v.Storage.CopySubVectorTo(res.Storage, 0, 0, i);
+            if (i < v.Count) v.Storage.CopySubVectorTo(res.Storage, i, i + 1, v.Count - i);
+            res.At(i, value);
+            return res;
+        }
+
+        Vector<T> DeleteAt<T>(Vector<T> v, int i) where T : struct, IEquatable<T>, IFormattable
+        {
+            var res = Vector<T>.Build.Dense(v.Count -1 );
+            if (i > 0) v.Storage.CopySubVectorTo(res.Storage, 0, 0, i);
+            if (i < v.Count) v.Storage.CopySubVectorTo(res.Storage, i+1, i, v.Count - i-1);
+            
+            return res;
         }
     }
 }
