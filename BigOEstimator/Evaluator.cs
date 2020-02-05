@@ -58,7 +58,7 @@ namespace BigOEstimator
                     stopwatch.Start();
                     var result =  algorithm((ulong)suggestedList[i]);
                     stopwatch.Stop();
-                    answer[i] = stopwatch.ElapsedTicks;
+                    answer[i] = stopwatch.ElapsedMilliseconds;
 
                     Console.WriteLine($"Answer for index {suggestedList[i]} is {answer[i]}");
                 }

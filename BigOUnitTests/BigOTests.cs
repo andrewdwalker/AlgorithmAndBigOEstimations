@@ -75,30 +75,22 @@ namespace BigOUnitTests
             Evaluator evaluator = new Evaluator();
             List<double> lst = new List<double>();
 
+
+
             // THIS WORKS
-            //for (int i = 1000000; i < 10000000; i = i + 1233)
+            //for (Int64 i = 100000000; i < 1000000000; i = i + 10000034)
             //{
             //    lst.Add((double)i);
             //}
-
-            // THIS WORKS
-            for (Int64 i = 100000000; i < 1000000000; i = i + 10000034)
+            for (Int64 i = 100000000; i < 500000000; i = i + 10000030)
             {
                 lst.Add((double)i);
             }
+           
 
-            
-            var result = evaluator.Evaluate(LinearAlgorithm2, lst);
-            //var result = evaluator.Evaluate(LinearAlgorithm2, new List<double>()
-            //    //{ 1000,1021, 1065, 1300, 1423, 1599,
-            //    //1683, 1722, 1822, 2000, 2050, 2090, 2500, 3000, 3100, 3109, 3500,
-            //    //4000, 4022, 4089, 4122, 4199, 4202, 4222, 5000 });
-            //{ 
-            //    3000, 3100, 3109, 3112, 3117, 3200, 3211, 3216, 3219, 3232, 3500, 3666, 3777,
-            //    4000, 4022, 4089, 4122, 4199, 4202, 4222, 5000, 6000,
-            //    7000, 7500, 8000, 9255, 10050, 10090, 11000, 11200, 11500,
-            //    12001, 13020, 14552, 15999, 19222
-            //});
+
+            var result = evaluator.Evaluate(LinearAlgorithm2, lst, false);
+           
             var minKey = result.Aggregate((l, r) => l.Value < r.Value ? l : r).Key;
             Assert.IsTrue(minKey.ToString() == FunctionEnum.N.ToString());
         }

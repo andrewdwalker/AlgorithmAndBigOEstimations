@@ -10,17 +10,16 @@ using System.Windows.Documents;
 using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
 using System.Windows.Shapes;
 
-namespace BigOWpfApp
+namespace BigOWpfApp.Views
 {
     /// <summary>
-    /// Interaction logic for MainWindow.xaml
+    /// Interaction logic for SimpleView.xaml
     /// </summary>
-    public partial class MainWindow : Window
+    public partial class SimpleView : Window
     {
-        public MainWindow()
+        public SimpleView()
         {
             InitializeComponent();
         }
