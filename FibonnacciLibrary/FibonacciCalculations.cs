@@ -73,7 +73,7 @@ namespace FibonnacciLibrary
         /// </summary>
         /// <param name="index"></param>
         /// <returns></returns>
-        public static uint JustOneFib(uint index)
+        public static ulong JustOneFib(ulong index)
         {
             switch (index)
             {
@@ -87,9 +87,31 @@ namespace FibonnacciLibrary
             }
         }
 
-        public static uint JustOneFibFaster(uint index)
+        public static ulong JustOneFibSimpleLoop(ulong index)
         {
-            IList<uint> lst = GenerateFibonacciNumbersRecursion1(index + 1);
+            ulong answer = 0;
+            ulong previousAnswer = 0;
+            for (ulong i = 0; i <= index; i++)
+            {
+                switch (i)
+                {
+                    case 0:
+                    case 1:
+                        answer = i;
+                        break;
+                    default:
+                        ulong temp = answer;
+                        answer = answer + previousAnswer;
+                        previousAnswer = temp;
+                        break;
+
+                }
+            }
+            return answer;
+        }
+        public static ulong JustOneFibFaster(ulong index)
+        {
+            IList<ulong> lst = GenerateFibonacciNumbersRecursion1(index + 1);
             return lst[(int)index];
         }
 
@@ -107,23 +129,23 @@ namespace FibonnacciLibrary
         /// but in fact it's pretty efficient!
         /// <param name="numberOfElements"></param>
         /// <returns></returns>
-        public static IList<uint> GenerateFibonacciNumbersRecursion1(uint numberOfElements)
+        public static IList<ulong> GenerateFibonacciNumbersRecursion1(ulong numberOfElements)
         {
             //List<uint> lst = new List<uint>();
             if (numberOfElements == 1)
             {
-                return new List<uint> { 0 };
+                return new List<ulong> { 0 };
 
             }
             else if (numberOfElements == 2)
             {
-                IList<uint> tmp = GenerateFibonacciNumbersRecursion1(1);
+                IList<ulong> tmp = GenerateFibonacciNumbersRecursion1(1);
                 tmp.Add(1);
                 return tmp;
             }
             else
             {
-                IList<uint> previousLst = GenerateFibonacciNumbersRecursion1(numberOfElements - 1);
+                IList<ulong> previousLst = GenerateFibonacciNumbersRecursion1(numberOfElements - 1);
                 previousLst.Add(previousLst[previousLst.Count - 1] + previousLst[previousLst.Count - 2]);
                 return previousLst;
             }
@@ -134,24 +156,17 @@ namespace FibonnacciLibrary
         {
             if (numberOfElments == 1)
             {
-                lst.Add(0);
-                //var temp = lst.Append<uint>(0);
-                //lst = temp;
+                lst.Add(0);               
             }
             else if (numberOfElments == 2)
             {
                 GenerateFibonacciNumbersRecursion2(numberOfElments - 1, ref lst);
-                lst.Add(1);
-                //var temp = lst.Append<uint>(1);
-                //lst = temp;
+                lst.Add(1);                
             }
             else
             {
                 GenerateFibonacciNumbersRecursion2(numberOfElments - 1, ref lst);
-                //var miniSequence = lst.Skip(lst.Count() - 2);
-                lst.Add(lst[lst.Count - 1] + lst[lst.Count - 2]);
-                //var temp = lst.Append<uint>(miniSequence.First() + miniSequence.Last());
-                //lst = temp;
+                lst.Add(lst[lst.Count - 1] + lst[lst.Count - 2]);               
             }
         }
 

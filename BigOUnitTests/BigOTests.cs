@@ -1,4 +1,5 @@
 ﻿using BigOEstimator;
+using FibonnacciLibrary;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System;
 using System.Collections.Generic;
@@ -26,11 +27,11 @@ namespace BigOUnitTests
         public void TestLinearAlgorithm1()
         {
             Evaluator evaluator = new Evaluator();
-            var result = evaluator.Evaluate(LinearAlgorithm1, new List<double>()
+            var result = evaluator.Evaluate(LinearAlgorithm1, new List<ulong>()
             { 1000,1021, 1065, 1300, 1423, 1599,
                 1683, 1722, 1822, 2000, 2050, 2090, 2500, 3000, 3100, 3109, 3500,
                 4000, 4022, 4089, 4122, 4199, 4202, 4222, 5000 });
-            var minKey = result.Aggregate((l, r) => l.Value < r.Value ? l : r).Key;
+            var minKey = CalculateMinKey(result);
             Assert.IsTrue(minKey.ToString() == FunctionEnum.N.ToString());
         }
 
@@ -38,18 +39,14 @@ namespace BigOUnitTests
         public void SanityTest()
         {
             Stopwatch stopwatch = new Stopwatch();
-            //stopwatch.Start();
-            //LinearAlgorithm1(500);
-            //stopwatch.Stop();
-            //Console.WriteLine($"LinearAlgorithm1 took {stopwatch.ElapsedMilliseconds}");
-
+            
             stopwatch.Restart();
             LinearAlgorithm2(100000000);
             stopwatch.Stop();
             Console.WriteLine($"LinearAlgorithm2 took {stopwatch.ElapsedMilliseconds}");
 
             stopwatch.Restart();
-            //LogNAlgorithm(9000000000000000000);
+            
             LogNAlgorithm(ulong.MaxValue);
             stopwatch.Stop();
             Console.WriteLine($"LogNAlgorithm took {stopwatch.ElapsedMilliseconds}");
@@ -73,100 +70,134 @@ namespace BigOUnitTests
         public void TestLinearAlgorithm2()
         {
             Evaluator evaluator = new Evaluator();
-            List<double> lst = new List<double>();
+            List<ulong> lst = new List<ulong>();
 
-
-
-            // THIS WORKS
-            //for (Int64 i = 100000000; i < 1000000000; i = i + 10000034)
-            //{
-            //    lst.Add((double)i);
-            //}
-            for (Int64 i = 100000000; i < 500000000; i = i + 10000030)
+            
+            for (ulong i = 10000000; i < 600000000; i = i + 10000030)
             {
-                lst.Add((double)i);
+                lst.Add(i);
             }
-           
-
 
             var result = evaluator.Evaluate(LinearAlgorithm2, lst, false);
-           
-            var minKey = result.Aggregate((l, r) => l.Value < r.Value ? l : r).Key;
+
+            var minKey = CalculateMinKey(result);
             Assert.IsTrue(minKey.ToString() == FunctionEnum.N.ToString());
         }
 
         [TestMethod]
         public void TestQuadraticAlgorithm()
         {
-            List<double> lst = new List<double>();
+            List<ulong> lst = new List<ulong>();
             Evaluator evaluator = new Evaluator();
-            //var result = evaluator.Evaluate(QuadraticAlgorithm, new List<double>()
-            //{ 1000,1021, 1065, 1300, 1423, 1599,
-            //    1683, 1722, 1822, 2000, 2050, 2090, 2500, 3000, 3100, 3109, 3500,
-            //    4000, 4022, 4089, 4122, 4199, 4202, 4222, 5000 });
-            for (Int64 i = 5000; i < 10000; i = i + 100)
+            
+            for (ulong i = 3000; i < 12000; i = i + 100)
             {
-                lst.Add((double)i);
+                lst.Add(i);
             }
 
             var result = evaluator.Evaluate(QuadraticAlgorithm, lst, false);
-            var minKey = result.Aggregate((l, r) => l.Value < r.Value ? l : r).Key;
+            var minKey = CalculateMinKey(result);
             Assert.IsTrue(minKey.ToString() == FunctionEnum.NSquared.ToString());
         }
 
         [TestMethod]
         public void TestCubicAlgorithm1()
         {
-            List<double> lst = new List<double>();
+            List<ulong> lst = new List<ulong>();
             Evaluator evaluator = new Evaluator();
             
-            for (Int64 i = 100; i < 600; i = i + 35)
+            for (ulong i = 100; i < 600; i = i + 35)
             {
-                lst.Add((double)i);
+                lst.Add(i);
             }
 
             var result = evaluator.Evaluate(CubicAlgorithm1, lst, false);
-            var minKey = result.Aggregate((l, r) => l.Value < r.Value ? l : r).Key;
+            var minKey = CalculateMinKey(result);
             Assert.IsTrue(minKey.ToString() == FunctionEnum.NCubed.ToString());
         }
 
         [TestMethod]
         public void TestCubicAlgorithm2()
         {
-            List<double> lst = new List<double>();
+            List<ulong> lst = new List<ulong>();
             Evaluator evaluator = new Evaluator();
 
-            //for (Int64 i = 1000; i < 9000; i = i + 400)
-            for (Int64 i = 100; i < 600; i = i + 35)
+           for (ulong i = 100; i < 600; i = i + 35)
             {
-                lst.Add((double)i);
+                lst.Add(i);
             }
 
             var result = evaluator.Evaluate(CubicAlgorithm2, lst, false);
-            var minKey = result.Aggregate((l, r) => l.Value < r.Value ? l : r).Key;
+            var minKey = CalculateMinKey(result);
             Assert.IsTrue(minKey.ToString() == FunctionEnum.NCubed.ToString());
         }
+
+        [TestMethod]
+        public void TestTwoToTheNAlgorithm()
+        {
+            List<ulong> lst = new List<ulong>();
+            Evaluator evaluator = new Evaluator();
+
+
+            for (ulong i = 14; i < 30; i = i + 1)
+            {
+                lst.Add(i);
+            }
+            
+            var result = evaluator.Evaluate(TwoToTheNAlgorithm, lst, false);
+            var minKey = CalculateMinKey(result);
+            Assert.IsTrue(minKey.ToString() == FunctionEnum.TwoToTheN.ToString());
+        }
+
 
         [TestMethod]      
         public void TestLogNAlgorithm()
         {
-            List<double> lst = new List<double>();
+            List<ulong> lst = new List<ulong>();
             Evaluator evaluator = new Evaluator();
-            //var result = evaluator.Evaluate(LogNAlgorithm, new List<double>()
-            //{ 1000,1021, 1065, 1300, 1423, 1599,
-            //    1683, 1722, 1822, 2000, 2050, 2090, 2500, 3000, 3100, 3109, 3500,
-            //    4000, 4022, 4089, 4122, 4199, 4202, 4222, 5000 });
+            
             for (ulong i = 1000000000000; i < 10000000000000; i = i + 50000000000)
             {
-                lst.Add((double)i);
+                lst.Add(i);
             }
 
             var result = evaluator.Evaluate(LogNAlgorithm, lst);
 
-            var minKey = result.Aggregate((l, r) => l.Value < r.Value ? l : r).Key;
+            var minKey = CalculateMinKey(result);
             Assert.IsTrue(minKey.ToString() == FunctionEnum.LogN.ToString());
         }
 
+        [TestMethod]
+        public void TestNaiveFibMethod()
+        {
+            List<ulong> lst = new List<ulong>();
+            Evaluator evaluator = new Evaluator();
+
+            for (ulong i = 25; i < 40; i = i + 1)
+            {
+                lst.Add(i);
+            }
+
+            var result = evaluator.Evaluate(FibonacciCalculations.JustOneFib, lst, false);
+            var minKey = CalculateMinKey(result);
+            Assert.IsTrue(minKey.ToString() == FunctionEnum.TwoToTheN.ToString());
+        }
+
+        [TestMethod]
+        public void TestFasterFibMethod()
+        {
+            List<ulong> lst = new List<ulong>();
+            Evaluator evaluator = new Evaluator();
+
+            for (ulong i = 1500000; i < 10000000; i = i + 100000)
+            {
+                lst.Add(i);
+            }
+
+            var result = evaluator.Evaluate(FibonacciCalculations.JustOneFibSimpleLoop, lst, false);
+            var minKey = CalculateMinKey(result);
+            Assert.IsTrue(minKey.ToString() == FunctionEnum.N.ToString());
+        }
         #region "Algorithms"
         /// <summary>
         /// Just one for loop.  Should run in linear time
@@ -187,14 +218,12 @@ namespace BigOUnitTests
         ulong LinearAlgorithm2(ulong n)
         {
             ulong z = 0;
-           // uint returnValue = 7;
+           
             for (ulong i = 0; i < n; i++)
             {
-                //Thread.Sleep(2);
-                //double y = _randomNumber.NextDouble()*100.0; // dummy calculation
+                
                 z = n + i;
                
-
             }
             return (ulong)Math.Log(z);
         }
@@ -211,10 +240,10 @@ namespace BigOUnitTests
             {
                 for (ulong j = 0; j < n; j++)
                 {
-                    z = i + j;
+                    z = z + i + j;
                 }
             }
-            return (ulong)Math.Log(z);//return n * n;
+            return (ulong)Math.Log(z);
         }
 
         ulong CubicAlgorithm1(ulong n)
@@ -224,7 +253,7 @@ namespace BigOUnitTests
             {
                 z = z + i;
             }
-            return (ulong)Math.Log(z);//return n * n;
+            return (ulong)Math.Log(z);
         }
 
         ulong CubicAlgorithm2(ulong n)
@@ -239,6 +268,17 @@ namespace BigOUnitTests
                         z = z + k;
                     }
                 }
+            }
+            return (ulong)Math.Log(z);
+        }
+
+        ulong TwoToTheNAlgorithm(ulong n)
+        {
+            ulong z = 0;
+            ulong endPoint = (ulong) Math.Pow(2, n);
+            for (ulong i = 0; i < endPoint; i++)
+            {
+                z = z + 1;
             }
             return (ulong)Math.Log(z);
         }
@@ -260,6 +300,13 @@ namespace BigOUnitTests
                 z = Math.Sin(z)*Math.Cos(z)*Math.Sqrt(Math.Sin(z)) + Math.Sin(i) + Math.Cos(i)*Math.Sin(i*i*i) + Math.Sin(n);
             }
             return (ulong)Math.Log(z);
+        }
+        #endregion
+
+        #region Helper Methods
+        FunctionEnum CalculateMinKey(Dictionary<FunctionEnum, ResultsForExport> results)
+        {
+            return results.Aggregate((l, r) => ((l.Value.SumOfResiduals < r.Value.SumOfResiduals) || double.IsNaN(r.Value.SumOfResiduals)) ? l : r).Key;
         }
         #endregion
     }
