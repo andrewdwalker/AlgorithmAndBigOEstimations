@@ -15,20 +15,21 @@
         </Grid.RowDefinitions>
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="*" />
-            <ColumnDefinition Width="*" />
+           
         </Grid.ColumnDefinitions>
         <StackPanel Orientation="Vertical" Grid.Row="0">
             <ComboBox Width="100" Grid.Row="0" ItemsSource="{Binding Algorithms}" SelectedValue="{Binding Path=SelectedAlgorithm, Mode=TwoWay}">
             </ComboBox>
             <Button Width="100" Command="{Binding RunAlgorithmCommand}" Content="Run Algorithm"></Button>
         </StackPanel>
+        <!--
         <lvc:CartesianChart Grid.Row="1" Grid.Column="0" LegendLocation="Bottom" >
             <lvc:CartesianChart.Series>
                 <lvc:ScatterSeries Title="Series A" Values="{Binding ValuesRealData}" />
             </lvc:CartesianChart.Series>
         </lvc:CartesianChart>
-
-        <lvc:CartesianChart  Grid.Row="1" Grid.Column="1" Series="{Binding SeriesCollection}" LegendLocation="Right" >
+-->
+        <lvc:CartesianChart  Grid.Row="1" Grid.Column="0" Series="{Binding SeriesCollection}" LegendLocation="Right" >
             <lvc:CartesianChart.AxisY>
                 <lvc:Axis Title="Msec" LabelFormatter="{Binding YFormatter}"></lvc:Axis>
             </lvc:CartesianChart.AxisY>

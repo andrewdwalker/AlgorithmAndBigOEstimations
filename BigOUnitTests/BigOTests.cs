@@ -184,12 +184,33 @@ namespace BigOUnitTests
         }
 
         [TestMethod]
+        public void TestTailRecursionFib()
+        {
+            List<ulong> lst = new List<ulong>();
+            Evaluator evaluator = new Evaluator();
+
+            // Won't work - you get stackoverflow
+            //for (ulong i = 1500000; i < 10000000; i = i + 100000)
+            //{
+            //    lst.Add(i);
+            //}
+            for (ulong i = 5700; i < (5700 + 150); i = i + 1)
+            {
+                lst.Add(i);
+            }
+
+            var result = evaluator.Evaluate(FibonacciCalculations.GetFibUsingIntelligentRecursionHelper, lst, false);
+            var minKey = CalculateMinKey(result);
+            Assert.IsTrue(minKey.ToString() == FunctionEnum.N.ToString());
+        }
+
+        [TestMethod]
         public void TestFasterFibMethod()
         {
             List<ulong> lst = new List<ulong>();
             Evaluator evaluator = new Evaluator();
 
-            for (ulong i = 1500000; i < 10000000; i = i + 100000)
+            for (ulong i = 1700000; i < 15000000; i = i + 100000)
             {
                 lst.Add(i);
             }

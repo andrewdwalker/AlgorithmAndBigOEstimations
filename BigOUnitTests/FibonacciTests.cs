@@ -33,6 +33,12 @@ namespace BigOUnitTests
             Assert.IsTrue(answer == 1);
         }
 
+        public void FibWithTailRecursion_Index4()
+        {
+            ulong answer = FibonacciCalculations.GetFibUsingIntelligentRecursionHelper(4);
+            Assert.IsTrue(answer == 3);
+        }
+
         [TestMethod]
         public void FibFromSequence_Index4()
         {

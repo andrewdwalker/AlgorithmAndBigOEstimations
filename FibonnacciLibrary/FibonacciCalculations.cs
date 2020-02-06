@@ -87,6 +87,28 @@ namespace FibonnacciLibrary
             }
         }
 
+        /// <summary>
+        /// See for example: https://www.geeksforgeeks.org/tail-recursion-fibonacci/
+        /// </summary>
+        /// <param name="index"></param>
+        /// <param name="accumulator1"></param>
+        /// <param name="accumulator2"></param>
+        /// <returns></returns>
+        private static ulong GetFibUsingIntelligentRecursion(ulong index, ulong accumulator1 = 0, ulong accumulator2 = 1)
+        {
+            if (index == 0)
+                return accumulator1;
+            else if (index == 1)
+                return accumulator2;
+            else
+                return GetFibUsingIntelligentRecursion(index - 1, accumulator2, accumulator1 + accumulator2);
+        }
+
+        public static ulong GetFibUsingIntelligentRecursionHelper(ulong index)
+        {
+            return GetFibUsingIntelligentRecursion(index);
+        }
+
         public static ulong JustOneFibSimpleLoop(ulong index)
         {
             ulong answer = 0;

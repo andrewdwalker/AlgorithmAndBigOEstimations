@@ -113,33 +113,90 @@ namespace BigOWpfApp.ViewModels
 
         private void PlotResults( Dictionary<FunctionEnum, ResultsForExport> results, List<ulong> originalPoints)
         {
+            SeriesCollection.Clear();
             PlotOriginalData(originalPoints, results[FunctionEnum.N].RealYs);
-            PlotGeneratedData(originalPoints, results);
+            PlotGeneratedData(originalPoints, results[FunctionEnum.N].Slope, results[FunctionEnum.N].SlopeIntercept,  Brushes.Gray,FunctionEnum.N);
+            PlotGeneratedData(originalPoints, results[FunctionEnum.TwoToTheN].Slope, results[FunctionEnum.TwoToTheN].SlopeIntercept, Brushes.Green, FunctionEnum.TwoToTheN);
+           PlotGeneratedData(originalPoints, results[FunctionEnum.NSquared].Slope, results[FunctionEnum.NSquared].SlopeIntercept, Brushes.Green, FunctionEnum.NSquared);
+           PlotGeneratedData(originalPoints, results[FunctionEnum.LogN].Slope, results[FunctionEnum.LogN].SlopeIntercept, Brushes.Green, FunctionEnum.LogN);
         }
 
         private void PlotOriginalData(List<ulong> xs, List<double> ys)
         {
-            for (int i = 0; i < xs.Count; i++)
-            {
-                ValuesRealData.Add(new ObservablePoint(xs[i], ys[i]));
-            }
-        }
-
-        private void PlotGeneratedData(List<ulong> xs, Dictionary<FunctionEnum, ResultsForExport> results)
-        {
             ChartValues<ObservablePoint> linearData = new ChartValues<ObservablePoint>();
             for (int i = 0; i < xs.Count; i++)
             {
-                linearData.Add(new ObservablePoint(xs[i], xs[i] * results[FunctionEnum.N].Slope + results[FunctionEnum.N].SlopeIntercept));
+                ValuesRealData.Add(new ObservablePoint(xs[i], ys[i]));
+                linearData.Add(new ObservablePoint(xs[i], ys[i]));
             }
 
             SeriesCollection.Add(new LineSeries
             {
-                Title = "Linear Fit",
+                Title = "Raw Data",
                 Values = linearData,
                 LineSmoothness = 0,
-                PointForeground = Brushes.Gray
+                PointForeground = Brushes.Blue,
+
             });
+        }
+
+        private void PlotGeneratedData(List<ulong> xs, double slope, double intercept,  Brush brush, FunctionEnum fitType)
+        {
+            if (double.IsNaN(slope) || double.IsNaN(intercept))
+            {
+                Console.WriteLine($"Bad slope {slope} and/or intercept {intercept} ");
+                return;
+            }
+            List<double> modifiedXs = new List<double>();
+            string title = "Unknown";
+            switch(fitType)
+            {
+                case FunctionEnum.N:
+                    title = "Linear Fit";
+                    modifiedXs = ModifyData(xs, p => p);
+                    break;
+                case FunctionEnum.NSquared:
+                    title = "Quadratic Fit";
+                    modifiedXs = ModifyData(xs, p => p * p);
+                    break;
+                case FunctionEnum.TwoToTheN:
+                    title = "2^N";
+                    modifiedXs = ModifyData(xs, p => Math.Pow(2, p));
+                    break;
+                case FunctionEnum.NCubed:
+                    title = "Cubit Fit";
+                    modifiedXs = ModifyData(xs, p => p * p * p);
+                    break;
+                case FunctionEnum.LogN:
+                    title = "LogN Fit";
+                    modifiedXs = ModifyData(xs, p => Math.Log(p));
+                    break;
+            }
+            ChartValues<ObservablePoint> linearData = new ChartValues<ObservablePoint>();
+            for (int i = 0; i < modifiedXs.Count; i++)
+            {
+                linearData.Add(new ObservablePoint(xs[i], modifiedXs[i] * slope + intercept));
+            }
+
+            SeriesCollection.Add(new LineSeries
+            {
+                Title = title,
+                Values = linearData,
+                LineSmoothness = 0,
+                PointForeground = brush
+                
+            });
+        }
+
+        private List<double> ModifyData(List<ulong> xs, Func<double, double> transform)
+        {
+            List<double> modifiedXs = new List<double>();
+            for (int i=0; i< xs.Count; i++)
+            {
+                modifiedXs.Add(transform(xs[i]));
+            }
+
+            return modifiedXs;
         }
         #endregion
     }
